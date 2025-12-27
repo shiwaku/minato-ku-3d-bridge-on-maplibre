@@ -62,11 +62,30 @@
         new maplibregl.AttributionControl({
           compact: true,
           customAttribution:
-            '<a href="https://twitter.com/shi__works" target="_blank">X(旧Twitter)</a> | <a href="" target="_blank">GitHub</a> | <a href="https://www.geospatial.jp/ckan/dataset/plateau-13103-minato-ku-2023" target="_blank">3D都市モデル（Project PLATEAU）港区（2023年度）</a>',
+            '<a href="https://twitter.com/shi__works" target="_blank">X(旧Twitter)</a> | <a href="https://github.com/shiwaku/minato-ku-3d-bridge-on-maplibre" target="_blank">GitHub</a> | <a href="https://www.geospatial.jp/ckan/dataset/plateau-13103-minato-ku-2023" target="_blank">3D都市モデル（Project PLATEAU）港区（2023年度）</a>',
+        })
+      );
+
+      map.addControl(
+        new maplibregl.TerrainControl({
+          source: "aist-dem-terrain-rgb",
+          exaggeration: 1, // 標高を強調する倍率
         })
       );
 
       map.on("load", () => {
+        map.addSource("aist-dem-terrain-rgb", {
+          type: "raster-dem",
+          tiles: [
+            "https://gbank.gsj.jp/seamless/elev/terrainRGB/land/{z}/{y}/{x}.png",
+          ],
+          attribution:
+            '<a href="https://tiles.gsj.jp/tiles/elev/tiles.html" target="_blank">産総研 シームレス標高タイル(陸域統合DEM)</a>',
+          tileSize: 256,
+        });
+
+        map.setTerrain({ source: "aist-dem-terrain-rgb", exaggeration: 1 });
+
         const overlay = new deck.MapboxOverlay({
           interleaved: true,
           layers: [
@@ -89,6 +108,24 @@
         });
 
         map.addControl(overlay);
+
+        map.setSky({
+          "sky-color": "#199EF3",
+          "sky-horizon-blend": 0.7,
+          "horizon-color": "#f0f8ff",
+          "horizon-fog-blend": 0.8,
+          "fog-color": "#2c7fb8",
+          "fog-ground-blend": 0.9,
+          "atmosphere-blend": [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            0,
+            1,
+            12,
+            0,
+          ],
+        });
       });
     </script>
   </body>
