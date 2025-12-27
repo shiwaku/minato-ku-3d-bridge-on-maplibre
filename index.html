@@ -1,0 +1,95 @@
+<html>
+  <head>
+    <title>東京都港区3D橋梁マップ</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
+    <link
+      href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/pmtiles@3.2.0/dist/pmtiles.js"></script>
+    <script src="https://unpkg.com/deck.gl@8.9.0/dist.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        background: #000;
+      }
+
+      #map {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="map"></div>
+    <script type="text/javascript">
+      const protocol = new pmtiles.Protocol();
+      maplibregl.addProtocol("pmtiles", protocol.tile);
+
+      const map = new maplibregl.Map({
+        container: "map",
+        style: "std.json",
+        zoom: 15.2,
+        minZoom: 4,
+        maxZoom: 23,
+        center: [139.776517, 35.629169],
+        hash: true,
+        bearing: -12,
+        pitch: 60,
+        maxPitch: 85,
+        attributionControl: false,
+      });
+
+      map.addControl(new maplibregl.NavigationControl());
+      map.addControl(new maplibregl.FullscreenControl());
+      map.addControl(
+        new maplibregl.ScaleControl({ maxWidth: 200, unit: "metric" })
+      );
+      map.addControl(
+        new maplibregl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: false,
+          },
+          fitBoundsOptions: { maxZoom: 18 },
+          trackUserLocation: true,
+          showUserLocation: true,
+        })
+      );
+      map.addControl(
+        new maplibregl.AttributionControl({
+          compact: true,
+          customAttribution:
+            '<a href="https://twitter.com/shi__works" target="_blank">X(旧Twitter)</a> | <a href="" target="_blank">GitHub</a> | <a href="https://www.geospatial.jp/ckan/dataset/plateau-13103-minato-ku-2023" target="_blank">3D都市モデル（Project PLATEAU）港区（2023年度）</a>',
+        })
+      );
+
+      map.on("load", () => {
+        const overlay = new deck.MapboxOverlay({
+          interleaved: true,
+          layers: [
+            new deck.GeoJsonLayer({
+              id: "bridge",
+              data: "./Bridge.geojson",
+              extruded: true,
+              wireframe: true,
+              filled: true,
+              stroked: true,
+              lineWidthUnits: "meters",
+              getLineWidth: 0.3,
+              getLineColor: [0, 255, 255, 255],
+              getFillColor: [0, 255, 255, 125],
+              getElevation: 20,
+              // material: MATERAL_FLAT,
+              // pickable: true,
+            }),
+          ],
+        });
+
+        map.addControl(overlay);
+      });
+    </script>
+  </body>
+</html>
