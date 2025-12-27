@@ -86,6 +86,27 @@
 
         map.setTerrain({ source: "aist-dem-terrain-rgb", exaggeration: 1 });
 
+        map.addSource("bldg", {
+          type: "vector",
+          tiles: [
+            "https://xs489works.xsrv.jp/mvt/13103_minato-ku_pref_2023_bldg_mvt/{z}/{x}/{y}.pbf",
+          ],
+          minzoom: 7,
+          maxzoom: 15,
+        });
+
+        map.addLayer({
+          id: "bldg",
+          type: "fill-extrusion",
+          source: "bldg",
+          "source-layer": "bldg:Building",
+          paint: {
+            "fill-extrusion-height": ["*", ["get", "measuredHeight"], 1],
+            "fill-extrusion-color": "#BF00FF",
+            "fill-extrusion-opacity": 0.5,
+          },
+        });
+
         const overlay = new deck.MapboxOverlay({
           interleaved: true,
           layers: [
