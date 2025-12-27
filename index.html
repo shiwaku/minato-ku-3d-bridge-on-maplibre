@@ -93,6 +93,8 @@
           ],
           minzoom: 7,
           maxzoom: 15,
+          attribution:
+            '<a href="https://www.geospatial.jp/ckan/dataset/plateau-13103-minato-ku-2023" target="_blank">3D都市モデル（Project PLATEAU）港区（2023年度）</a>',
         });
 
         map.addLayer({
@@ -102,7 +104,7 @@
           "source-layer": "bldg:Building",
           paint: {
             "fill-extrusion-height": ["*", ["get", "measuredHeight"], 1],
-            "fill-extrusion-color": "#BF00FF",
+            "fill-extrusion-color": "#7F00FF",
             "fill-extrusion-opacity": 0.5,
           },
         });
